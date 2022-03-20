@@ -66,15 +66,17 @@ def get_response(
         test_url: str = "https://ipv4.webshare.io/",
         protocol: Optional[str] = WEBSHARE_IO_PROTOCOL,
         env_auth_prefix: Optional[str] = None,
-        additional_headers: Optional[dict] = None
+        additional_headers: Optional[dict] = None,
+        cookies: Optional[object] = None
 ) -> requests.Response:
     """
     Send a web request with auth, headers, and proxies. Take a protocol to add proxies, a dotenv prefix to access
-    auth info, and a dict to add additional headers to boilerplate headers.
+    auth info, and a dict to add additional headers to boilerplate headers
     :param test_url: web address
     :param protocol: 'http' or 'sock5' or None
     :param env_auth_prefix: prefix for accessing username and password for .env file
     :param additional_headers: None or a dict with modifying headers
+    :param cookies: optional requests.RequestsCookieJar object
     :return: requests.Response object
     """
     r = requests.get(
@@ -86,7 +88,8 @@ def get_response(
         auth=None if env_auth_prefix is None else get_auth(
             f"{env_auth_prefix}_USERNAME",
             f"{env_auth_prefix}_PASSWORD"
-        )
+        ),
+        cookies=None if cookies is None else cookies
     )
     r.raise_for_status()
     return r
